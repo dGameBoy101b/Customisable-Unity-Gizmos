@@ -1,0 +1,16 @@
+{
+    "name": "dGameBoy101b.CustomisableGizmos.Editor",
+    "rootNamespace": "dGameBoy101b.CustomisableGizmos",
+    "references": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
