@@ -1,0 +1,13 @@
+{
+	"name": "com.dgameboy101b.customisablegizmos",
+	"version": "0.0.0",
+	"displayName": "Customisable Gizmos",
+	"description": "An extendable collection of flexible and configurable gizmos.",
+	"unity": "2020.3",
+	"author": {
+		"name": "dGameBoy101b"
+	},
+	"keywords": [
+		"gizmos"
+	]
+}
