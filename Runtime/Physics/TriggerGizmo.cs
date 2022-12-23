@@ -14,7 +14,7 @@ namespace dGameBoy101b.CustomisableGizmos
 	{
 		[SerializeField]
 		[Tooltip("The colour used to highlight colliders that entered a collision with this")]
-		public Color _enterColour = Color.blue;
+		private Color _enterColour = Color.blue;
 
 		/**
 		 * The colour used to highlight colliders that entered a collision with this
@@ -99,7 +99,8 @@ namespace dGameBoy101b.CustomisableGizmos
 		{
 			Enter,
 			Stay,
-			Exit
+			Exit,
+			Destroyed
 		}
 
 		/**
@@ -139,20 +140,17 @@ namespace dGameBoy101b.CustomisableGizmos
 			foreach (var pair in this.Colliders)
 			{
 				Color colour = this.DestroyColour;
-				if (pair.Key != null)
+				switch (pair.Value)
 				{
-					switch (pair.Value)
-					{
-						case CollisionPhase.Stay:
-							colour = this.StayColour;
-							break;
-						case CollisionPhase.Enter:
-							colour = this.EnterColour;
-							break;
-						case CollisionPhase.Exit:
-							colour = this.ExitColour;
-							break;
-					}
+					case CollisionPhase.Stay:
+						colour = this.StayColour;
+						break;
+					case CollisionPhase.Enter:
+						colour = this.EnterColour;
+						break;
+					case CollisionPhase.Exit:
+						colour = this.ExitColour;
+						break;
 				}
 				Gizmos.color = colour;
 				Gizmos.DrawLine(start_position, this.LastPositions[pair.Key]);
@@ -170,13 +168,25 @@ namespace dGameBoy101b.CustomisableGizmos
 		}
 
 		/**
+		 * Update the destroyed status of every tracked collider
+		 */
+		public void CheckColliderDestruction()
+		{
+			HashSet<Collider> newly_destroyed = new HashSet<Collider>();
+			foreach (var pair in this.Colliders)
+				if (pair.Value != CollisionPhase.Destroyed && pair.Key == null)
+					newly_destroyed.Add(pair.Key);
+			foreach (var key in newly_destroyed)
+				this.StopTrackingCollider(key);
+		}
+
+		/**
 		 * A coroutine for transitioning a collider from the enter phase to the stay phase
 		 */
 		private IEnumerator StayCollider(Collider collider)
 		{
 			yield return new WaitForSecondsRealtime(this.EnterDelay);
 			this._colliders[collider] = CollisionPhase.Stay;
-			Debug.Log(this.name + " transitioned " + collider.name + " to stay phase");
 		}
 
 		/** 
@@ -187,7 +197,6 @@ namespace dGameBoy101b.CustomisableGizmos
 			yield return new WaitForSecondsRealtime(this.ExitDelay);
 			this._colliders.Remove(collider);
 			this._lastPositions.Remove(collider);
-			Debug.Log(this.name + " removed " + collider.name);
 		}
 
 		/**
@@ -206,7 +215,6 @@ namespace dGameBoy101b.CustomisableGizmos
 			}
 			catch (KeyNotFoundException) { }
 			this._coroutines[other] = this.StartCoroutine(this.StayCollider(other));
-			Debug.Log(this.name + " started tracking " + other.name);
 		}
 
 		/** 
@@ -215,16 +223,16 @@ namespace dGameBoy101b.CustomisableGizmos
 		 */
 		public void StopTrackingCollider(Collider other)
 		{
-			if (!this.Colliders.ContainsKey(other) || this.Colliders[other] == CollisionPhase.Exit)
+			if (!this.Colliders.ContainsKey(other) || this.Colliders[other] == CollisionPhase.Destroyed
+				|| (this.Colliders[other] == CollisionPhase.Exit && other != null))
 				return;
-			this._colliders[other] = CollisionPhase.Exit;
+			this._colliders[other] = other == null ? CollisionPhase.Destroyed : CollisionPhase.Exit;
 			try
 			{
 				this.StopCoroutine(this._coroutines[other]);
 			}
 			catch (KeyNotFoundException) { }
 			this._coroutines[other] = this.StartCoroutine(this.RemoveCollider(other));
-			Debug.Log(this.name + " stopped tracking " + other.name);
 		}
 
 		/**
@@ -250,6 +258,7 @@ namespace dGameBoy101b.CustomisableGizmos
 
 		private void Update()
 		{
+			this.CheckColliderDestruction();
 			this.UpdateColliderPositions();
 		}
 
