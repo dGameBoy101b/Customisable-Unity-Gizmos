@@ -14,3 +14,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - ComponentGizmo base class that automatically attaches a gizmo to another component
  - BehaviourGizmo base class that draws its gizmo conditionally based on the enabled state of an attached behaviour
  - TriggerGizmo class that tracks the colliders entering and exiting a trigger
+ - RigidbodyVelocityGizmo class that visualises the angular and linear velocity of an attached Rigidbody
