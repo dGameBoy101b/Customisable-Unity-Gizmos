@@ -7,9 +7,11 @@ namespace dGameBoy101b.CustomisableGizmos
 	 * @author dGameBoy101b
 	 * @date 2022-12-23
 	 */
-	[AddComponentMenu("Customisable Gizmos/Physics/Rigidbody Velocity Gizmo")]
+	[AddComponentMenu("Customisable Gizmo/Physics/Rigidbody Velocity Gizmo")]
 	public class RigidbodyVelocityGizmo : ComponentGizmo<Rigidbody>
 	{
+		[Header("Linear Velocity")]
+
 		[SerializeField]
 		[Tooltip("The colour used to draw the linear velocity of the attached rigidbody")]
 		private Color _linearVelocityColour = Color.yellow;
@@ -24,6 +26,21 @@ namespace dGameBoy101b.CustomisableGizmos
 		}
 
 		[SerializeField]
+		[Tooltip("Scaling applied to the linear velocity ray")]
+		private float _linearVelocityScale = 1f;
+
+		/**
+		 * Scaling applied to the linear velocity ray
+		 */
+		public float LinearVelocityScale
+		{
+			get => this._linearVelocityScale;
+			set => this._linearVelocityScale = value;
+		}
+
+		[Header("Angular Velocity")]
+
+		[SerializeField]
 		[Tooltip("The colour used to draw the angular velocity of the attached rigidbody")]
 		private Color _angularVelocityColour = Color.cyan;
 
@@ -36,13 +53,26 @@ namespace dGameBoy101b.CustomisableGizmos
 			set => this._angularVelocityColour = value;
 		}
 
+		[SerializeField]
+		[Tooltip("Scaling applied to the angular velocity ray")]
+		private float _angularVelocityScale = 1f;
+
+		/**
+		 * Scaling applied to the angular velocity ray
+		 */
+		public float AngularVelocityScale
+		{
+			get => this._angularVelocityScale;
+			set => this._angularVelocityScale = value;
+		}
+
 		protected override void Draw()
 		{
 			Vector3 center = this.Source.centerOfMass + this.Source.transform.position;
 			Gizmos.color = this.LinearVelocityColour;
-			Gizmos.DrawRay(center, this.Source.velocity);
+			Gizmos.DrawRay(center, this.Source.velocity * this.LinearVelocityScale);
 			Gizmos.color = this.AngularVelocityColour;
-			Gizmos.DrawRay(center, this.Source.angularVelocity);
+			Gizmos.DrawRay(center, this.Source.angularVelocity * this.AngularVelocityScale);
 		}
 	}
 }
