@@ -10,14 +10,11 @@ namespace dGameBoy101b.CustomisableGizmos.Parts
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			List<string> elements = new List<string>();
-			foreach (var ele in property)
-				elements.Add("\t\"" + ele.ToString() + "\"\n");
-			Debug.Log("{\n" + string.Join(" ", elements) + "}");
-			Debug.Log(elements);
-			foreach (SerializedProperty part in property.FindPropertyRelative("_parts"))
-			{
-				base.OnGUI(position, part, label);
-			}
+			foreach (SerializedProperty ele in property)
+				elements.Add("\t\"" + ele.name + "\"\n");
+			Debug.Log("Gizmo Part Collection: {\n" + string.Join(" ", elements) + "}");
+			property.Reset();
+			Debug.Log("_parts type: \"" + (property.FindPropertyRelative("_parts")?.type ?? "null") + "\"");
 		}
 	}
 }

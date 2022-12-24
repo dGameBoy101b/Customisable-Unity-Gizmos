@@ -6,17 +6,22 @@ namespace dGameBoy101b.CustomisableGizmos.Parts
 	[Serializable]
 	public abstract class GizmoPart
 	{
+		[SerializeField]
+		private string _name;
+
 		/**
 		 * The name of this part shown as a header in the inspector
 		 */
-		[SerializeField]
-		public readonly string Name;
+		public string Name
+		{
+			get => this._name;
+			private set => this._name = value;
+		}
 
 		/**
 		 * Whether this part should be drawn
 		 */
-		[HideInInspector]
-		public bool ShouldDraw = true;
+		public bool ShouldDraw { get; set; } = true;
 
 		/**
 		 * Constructor

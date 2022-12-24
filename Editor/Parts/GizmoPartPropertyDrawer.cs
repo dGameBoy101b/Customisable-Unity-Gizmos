@@ -10,6 +10,7 @@ namespace dGameBoy101b.CustomisableGizmos.Parts
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
+			Debug.Log("Gizmo part property drawn");
 			this.foldout = EditorGUILayout.BeginFoldoutHeaderGroup(this.foldout, new GUIContent(property.FindPropertyRelative("Name").stringValue));
 			if (this.foldout)
 			{
